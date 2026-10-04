@@ -1,0 +1,24 @@
+.anchor
+.DS_Store
+target
+**/*.rs.bk
+node_modules
+test-ledger
+.yarn
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# backend (Rust)
+backend/target
+backend/.cargo/config.toml
+
+# frontend (Vite)
+frontend/dist
+frontend/.vite
+
+# misc
+*.log
+.vscode
