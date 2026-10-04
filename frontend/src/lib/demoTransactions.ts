@@ -1,0 +1,10 @@
+/**
+ * Pre-built unsigned transactions against SentinelMesh's seeded devnet test
+ * token account, for one-click demoing. The backend's simulateTransaction
+ * call always replaces the blockhash, so these stay valid indefinitely.
+ */
+export const DEMO_DANGER_TX =
+  "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAIEpMcOqP2ti9KElUPZyH4nhhCY+6aXSay2KAEg/vIG17Bq320kN3gFJYE8GkNXYZlrW7zKxjxiN8H677AK0bTsAupzh89P/FMN8th7BqMq6jhZPEfh8GchuklY6zKTv1KnBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkXsVmpxrwkaDqb2Wsh2dHcTAWDq4QQpCM3qQ94nbDnaAEDAwECAAkEABCl1OgAAAA=";
+
+export const DEMO_SAFE_TX =
+  "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAIEpMcOqP2ti9KElUPZyH4nhhCY+6aXSay2KAEg/vIG17Bq320kN3gFJYE8GkNXYZlrW7zKxjxiN8H677AK0bTsAupzh89P/FMN8th7BqMq6jhZPEfh8GchuklY6zKTv1KnBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkXsVmpxrwkaDqb2Wsh2dHcTAWDq4QQpCM3qQ94nbDnaAEDAwECAAkEAMqaOwAAAAA=";

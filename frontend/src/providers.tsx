@@ -1,4 +1,5 @@
 import { useMemo, type ReactNode } from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { clusterApiUrl } from '@solana/web3.js'
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={[]} autoConnect>
-          <WalletModalProvider>{children}</WalletModalProvider>
+          <WalletModalProvider>
+            <BrowserRouter>{children}</BrowserRouter>
+          </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </QueryClientProvider>
