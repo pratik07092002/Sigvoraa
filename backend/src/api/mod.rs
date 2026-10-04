@@ -2,6 +2,7 @@ pub mod health;
 pub mod shield;
 pub mod alerts;
 pub mod address;
+pub mod report;
 pub mod scan;
 pub mod stats;
 
@@ -14,6 +15,7 @@ pub fn routes() -> Router<Arc<AppState>> {
         .merge(shield::routes())
         .merge(alerts::routes())
         .merge(address::routes())
+        .merge(report::routes())
         .merge(scan::routes())
         .merge(stats::routes())
 }

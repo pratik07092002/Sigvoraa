@@ -69,3 +69,23 @@ export async function checkTransaction(transactionBase64: string): Promise<Shiel
   }
   return res.json();
 }
+
+export interface ReportResult {
+  signature: string;
+  threat_entry: string;
+  explorer_url: string;
+}
+
+export async function reportAlert(alertId: number): Promise<ReportResult> {
+  const res = await fetch("/api/report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    body: JSON.stringify({ alert_id: alertId }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `report failed: ${res.status}`);
+  }
+  return res.json();
+}

@@ -78,6 +78,56 @@ pub async fn list_alerts(pool: &PgPool, limit: i64, min_severity: Option<i16>) -
     .await
 }
 
+pub async fn get_alert(pool: &PgPool, id: i64) -> Result<Option<AlertRow>, sqlx::Error> {
+    sqlx::query_as::<_, AlertRow>(
+        r#"
+        SELECT id, signature, rule_id, severity, target_address, explanation, status, created_at
+        FROM alerts
+        WHERE id = $1
+        "#,
+    )
+    .bind(id)
+    .fetch_optional(pool)
+    .await
+}
+
+pub async fn mark_alert_reported(pool: &PgPool, id: i64) -> Result<(), sqlx::Error> {
+    sqlx::query("UPDATE alerts SET status = 'reported' WHERE id = $1")
+        .bind(id)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
+pub async fn upsert_flagged_address(
+    pool: &PgPool,
+    address: &str,
+    category: &str,
+    risk_score: i16,
+    on_chain_tx: &str,
+    evidence: &serde_json::Value,
+) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        r#"
+        INSERT INTO flagged_addresses (address, category, risk_score, on_chain_tx, evidence)
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (address) DO UPDATE
+        SET category = EXCLUDED.category,
+            risk_score = EXCLUDED.risk_score,
+            on_chain_tx = EXCLUDED.on_chain_tx,
+            evidence = EXCLUDED.evidence
+        "#,
+    )
+    .bind(address)
+    .bind(category)
+    .bind(risk_score)
+    .bind(on_chain_tx)
+    .bind(evidence)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
 pub struct Stats {
     pub total_alerts: i64,
     pub flagged_addresses: i64,

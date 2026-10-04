@@ -16,6 +16,7 @@ use tower_http::trace::TraceLayer;
 pub struct AppState {
     pub db: Option<sqlx::PgPool>,
     pub rpc: RpcClient,
+    pub registry: Option<registry::RegistryClient>,
 }
 
 #[tokio::main]
@@ -49,9 +50,22 @@ async fn main() -> anyhow::Result<()> {
     }
 
     let rpc_url = std::env::var("SOLANA_RPC_URL").unwrap_or_else(|_| "https://api.devnet.solana.com".to_string());
+
+    let registry = match registry::RegistryClient::from_env(rpc_url.clone()) {
+        Ok(client) => {
+            tracing::info!("registry reporter: {}", client.reporter_pubkey());
+            Some(client)
+        }
+        Err(err) => {
+            tracing::warn!("registry write flow disabled: {err}");
+            None
+        }
+    };
+
     let state = Arc::new(AppState {
         db: db_pool,
         rpc: RpcClient::new(rpc_url),
+        registry,
     });
 
     let app = Router::new()
