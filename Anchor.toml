@@ -15,7 +15,7 @@ threat_registry = "Cy4jqUsSnq2Z9rK2Lv7FtkkdziXN7ZBRNGKC5edkbnBU"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = '~\.config\solana\id.json'
 
 [scripts]
