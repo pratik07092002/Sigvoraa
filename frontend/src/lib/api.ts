@@ -71,9 +71,10 @@ export async function checkTransaction(transactionBase64: string): Promise<Shiel
 }
 
 export interface ReportResult {
-  signature: string;
+  signature: string | null;
   threat_entry: string;
   explorer_url: string;
+  already_on_chain: boolean;
 }
 
 export async function reportAlert(alertId: number): Promise<ReportResult> {

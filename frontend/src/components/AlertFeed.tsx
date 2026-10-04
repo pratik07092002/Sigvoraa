@@ -30,18 +30,18 @@ function ReportButton({ alert }: { alert: Alert }) {
   });
 
   if (alert.status === "reported" || result) {
-    const sig = result?.signature;
+    const label = result?.already_on_chain ? "Already on registry" : "Reported";
     return (
       <span className="flex items-center gap-1 text-xs font-medium text-status-good">
-        {sig ? (
+        {result ? (
           <a
-            href={`https://explorer.solana.com/tx/${sig}?cluster=devnet`}
+            href={result.explorer_url}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1 hover:underline"
           >
             <CheckCircle2 className="h-3.5 w-3.5" />
-            Reported
+            {label}
             <ExternalLink className="h-3 w-3" />
           </a>
         ) : (

@@ -1,4 +1,9 @@
-use crate::{api::error::ApiError, db::queries, registry::ThreatCategory, AppState};
+use crate::{
+    api::error::ApiError,
+    db::queries,
+    registry::{ReportOutcome, ThreatCategory},
+    AppState,
+};
 use axum::{extract::State, routing::post, Json, Router};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -16,9 +21,13 @@ pub struct ReportRequest {
 
 #[derive(Serialize)]
 pub struct ReportResponse {
-    pub signature: String,
+    pub signature: Option<String>,
     pub threat_entry: String,
     pub explorer_url: String,
+    /// True when this target already had a registry entry (from any prior
+    /// report) -- no new transaction was submitted, but the alert is still
+    /// marked reported since the thing it asked for is already true.
+    pub already_on_chain: bool,
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -71,10 +80,15 @@ async fn report(
     hasher.update(alert.explanation.as_deref().unwrap_or("").as_bytes());
     let evidence_hash: [u8; 32] = hasher.finalize().into();
 
-    let (signature, threat_entry) = registry
+    let outcome = registry
         .report_threat(target, category, severity, evidence_hash)
         .await
         .map_err(|e| ApiError::bad_gateway(e.to_string()))?;
+
+    let (signature, threat_entry, already_on_chain) = match outcome {
+        ReportOutcome::Created { signature, threat_entry } => (Some(signature), threat_entry, false),
+        ReportOutcome::AlreadyOnChain { threat_entry } => (None, threat_entry, true),
+    };
 
     let evidence = serde_json::json!({
         "alert_id": alert.id,
@@ -82,9 +96,15 @@ async fn report(
         "rule_id": alert.rule_id,
         "explanation": alert.explanation,
     });
-    if let Err(err) =
-        queries::upsert_flagged_address(pool, &target_address, category.as_str(), alert.severity, &signature, &evidence)
-            .await
+    if let Err(err) = queries::upsert_flagged_address(
+        pool,
+        &target_address,
+        category.as_str(),
+        alert.severity,
+        signature.as_deref().unwrap_or("already-on-chain"),
+        &evidence,
+    )
+    .await
     {
         tracing::warn!("failed to upsert flagged_addresses after on-chain report: {err}");
     }
@@ -92,9 +112,15 @@ async fn report(
         tracing::warn!("failed to mark alert reported: {err}");
     }
 
+    let explorer_url = match &signature {
+        Some(sig) => format!("https://explorer.solana.com/tx/{sig}?cluster=devnet"),
+        None => format!("https://explorer.solana.com/address/{threat_entry}?cluster=devnet"),
+    };
+
     Ok(Json(ReportResponse {
-        signature: signature.clone(),
+        signature,
         threat_entry: threat_entry.to_string(),
-        explorer_url: format!("https://explorer.solana.com/tx/{signature}?cluster=devnet"),
+        explorer_url,
+        already_on_chain,
     }))
 }

@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Context};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::{
+    commitment_config::CommitmentConfig,
     instruction::{AccountMeta, Instruction},
     pubkey::Pubkey,
     signature::{Keypair, Signer},
@@ -77,16 +78,31 @@ impl RegistryClient {
         self.reporter.pubkey()
     }
 
+    /// Reports a target to the on-chain registry. The program's
+    /// ThreatEntry PDA is `init`-only (one entry per target forever), so a
+    /// target that's already been reported -- by any rule, any reporter --
+    /// can't be `init`ed again. Rather than let that surface as a raw
+    /// "account already in use" transaction failure, we check first and
+    /// treat an existing entry as success: the thing the caller actually
+    /// wants (this target being on the registry) is already true.
     pub async fn report_threat(
         &self,
         target: Pubkey,
         category: ThreatCategory,
         severity: u8,
         evidence_hash: [u8; 32],
-    ) -> anyhow::Result<(String, Pubkey)> {
+    ) -> anyhow::Result<ReportOutcome> {
         let (threat_entry, _) = Pubkey::find_program_address(&[b"threat", target.as_ref()], &self.program_id);
         let (reporter_account, _) =
             Pubkey::find_program_address(&[b"reporter", self.reporter.pubkey().as_ref()], &self.program_id);
+
+        let existing = self
+            .rpc
+            .get_account_with_commitment(&threat_entry, CommitmentConfig::confirmed())
+            .await?;
+        if existing.value.is_some() {
+            return Ok(ReportOutcome::AlreadyOnChain { threat_entry });
+        }
 
         let mut data = REPORT_THREAT_DISCRIMINATOR.to_vec();
         data.extend_from_slice(target.as_ref());
@@ -109,6 +125,11 @@ impl RegistryClient {
         let tx =
             Transaction::new_signed_with_payer(&[ix], Some(&self.reporter.pubkey()), &[&self.reporter], blockhash);
         let signature = self.rpc.send_and_confirm_transaction(&tx).await?;
-        Ok((signature.to_string(), threat_entry))
+        Ok(ReportOutcome::Created { signature: signature.to_string(), threat_entry })
     }
+}
+
+pub enum ReportOutcome {
+    Created { signature: String, threat_entry: Pubkey },
+    AlreadyOnChain { threat_entry: Pubkey },
 }
