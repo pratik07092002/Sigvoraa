@@ -78,7 +78,8 @@ async fn main() -> anyhow::Result<()> {
         .layer(cors)
         .layer(TraceLayer::new_for_http());
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
+    let port: u16 = std::env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(8080);
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
     tracing::info!("SentinelMesh backend listening on {addr}");
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())

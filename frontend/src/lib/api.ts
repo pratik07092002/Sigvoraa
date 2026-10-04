@@ -38,8 +38,10 @@ export interface ShieldCheckResult {
   findings: ShieldFinding[];
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(path, { cache: "no-store" });
+  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`${path} failed: ${res.status}`);
   return res.json();
 }
@@ -57,7 +59,7 @@ export function fetchAddressProfile(address: string): Promise<AddressProfile> {
 }
 
 export async function checkTransaction(transactionBase64: string): Promise<ShieldCheckResult> {
-  const res = await fetch("/api/shield/check", {
+  const res = await fetch(`${API_BASE}/api/shield/check`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     cache: "no-store",
@@ -78,7 +80,7 @@ export interface ReportResult {
 }
 
 export async function reportAlert(alertId: number): Promise<ReportResult> {
-  const res = await fetch("/api/report", {
+  const res = await fetch(`${API_BASE}/api/report`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     cache: "no-store",
