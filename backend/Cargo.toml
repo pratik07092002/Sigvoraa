@@ -15,11 +15,12 @@ axum = { version = "0.7", features = ["ws"] }
 tower-http = { version = "0.5", features = ["cors", "trace"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "json", "migrate"] }
 solana-client = "2"
 solana-sdk = "2"
 solana-transaction-status = "2"
 borsh = "1"
+futures-util = "0.3"
 reqwest = { version = "0.12", features = ["json"] }
 dotenvy = "0.15"
 tracing = "0.1"

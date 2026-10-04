@@ -3560,6 +3560,7 @@ dependencies = [
  "borsh 1.8.1",
  "chrono",
  "dotenvy",
+ "futures-util",
  "reqwest",
  "serde",
  "serde_json",

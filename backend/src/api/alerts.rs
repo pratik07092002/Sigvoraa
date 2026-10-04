@@ -1,23 +1,35 @@
-use crate::AppState;
-use axum::{extract::State, routing::get, Json, Router};
-use serde::Serialize;
+use crate::{db::queries, AppState};
+use axum::{
+    extract::{Query, State},
+    routing::get,
+    Json, Router,
+};
+use serde::Deserialize;
 use std::sync::Arc;
 
-#[derive(Serialize)]
-pub struct Alert {
-    pub id: i64,
-    pub signature: String,
-    pub rule_id: String,
-    pub severity: i16,
-    pub target_address: Option<String>,
-    pub explanation: Option<String>,
+#[derive(Deserialize)]
+pub struct AlertsQuery {
+    limit: Option<i64>,
+    min_severity: Option<i16>,
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
     Router::new().route("/alerts", get(list_alerts))
 }
 
-async fn list_alerts(State(_state): State<Arc<AppState>>) -> Json<Vec<Alert>> {
-    // TODO(Phase 3): read from the `alerts` table, support pagination + severity filter.
-    Json(vec![])
+async fn list_alerts(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<AlertsQuery>,
+) -> Json<Vec<queries::AlertRow>> {
+    let Some(pool) = &state.db else {
+        return Json(vec![]);
+    };
+    let limit = params.limit.unwrap_or(50).min(500);
+    match queries::list_alerts(pool, limit, params.min_severity).await {
+        Ok(alerts) => Json(alerts),
+        Err(err) => {
+            tracing::warn!("list_alerts query failed: {err}");
+            Json(vec![])
+        }
+    }
 }

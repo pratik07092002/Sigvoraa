@@ -1,4 +1,4 @@
-use crate::AppState;
+use crate::{db::queries, AppState};
 use axum::{extract::State, routing::get, Json, Router};
 use serde::Serialize;
 use std::sync::Arc;
@@ -14,11 +14,27 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().route("/stats", get(stats))
 }
 
-async fn stats(State(_state): State<Arc<AppState>>) -> Json<Stats> {
-    // TODO(Phase 3): aggregate counts from Postgres.
-    Json(Stats {
-        total_alerts: 0,
-        flagged_addresses: 0,
-        transactions_indexed: 0,
-    })
+async fn stats(State(state): State<Arc<AppState>>) -> Json<Stats> {
+    let Some(pool) = &state.db else {
+        return Json(Stats {
+            total_alerts: 0,
+            flagged_addresses: 0,
+            transactions_indexed: 0,
+        });
+    };
+    match queries::get_stats(pool).await {
+        Ok(s) => Json(Stats {
+            total_alerts: s.total_alerts,
+            flagged_addresses: s.flagged_addresses,
+            transactions_indexed: s.transactions_indexed,
+        }),
+        Err(err) => {
+            tracing::warn!("get_stats query failed: {err}");
+            Json(Stats {
+                total_alerts: 0,
+                flagged_addresses: 0,
+                transactions_indexed: 0,
+            })
+        }
+    }
 }

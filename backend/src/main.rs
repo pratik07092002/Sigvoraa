@@ -24,7 +24,12 @@ async fn main() -> anyhow::Result<()> {
 
     let db_pool = match std::env::var("DATABASE_URL") {
         Ok(url) => match db::pool::connect(&url).await {
-            Ok(pool) => Some(pool),
+            Ok(pool) => {
+                if let Err(err) = sqlx::migrate!("./migrations").run(&pool).await {
+                    tracing::warn!("failed to run migrations: {err}");
+                }
+                Some(pool)
+            }
             Err(err) => {
                 tracing::warn!("failed to connect to database: {err}");
                 None
@@ -35,6 +40,10 @@ async fn main() -> anyhow::Result<()> {
             None
         }
     };
+
+    if let Some(pool) = &db_pool {
+        tokio::spawn(indexer::run(pool.clone()));
+    }
 
     let state = Arc::new(AppState { db: db_pool });
 
