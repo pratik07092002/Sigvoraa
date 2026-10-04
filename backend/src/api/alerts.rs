@@ -24,7 +24,7 @@ async fn list_alerts(
     let Some(pool) = &state.db else {
         return Json(vec![]);
     };
-    let limit = params.limit.unwrap_or(50).min(500);
+    let limit = params.limit.unwrap_or(50).clamp(1, 500);
     match queries::list_alerts(pool, limit, params.min_severity).await {
         Ok(alerts) => Json(alerts),
         Err(err) => {

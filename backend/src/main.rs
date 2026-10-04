@@ -68,20 +68,49 @@ async fn main() -> anyhow::Result<()> {
         registry,
     });
 
+    let cors = build_cors_layer();
+
     let app = Router::new()
         .route("/", get(root))
         .route("/health", get(api::health::health))
         .nest("/api", api::routes())
         .with_state(state)
-        .layer(CorsLayer::permissive())
+        .layer(cors)
         .layer(TraceLayer::new_for_http());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     tracing::info!("SentinelMesh backend listening on {addr}");
     let listener = tokio::net::TcpListener::bind(addr).await?;
-    axum::serve(listener, app).await?;
+    axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
 
     Ok(())
+}
+
+fn build_cors_layer() -> CorsLayer {
+    match std::env::var("FRONTEND_ORIGIN") {
+        Ok(origins) if !origins.trim().is_empty() => {
+            let parsed: Vec<_> = origins
+                .split(',')
+                .filter_map(|o| o.trim().parse().ok())
+                .collect();
+            tracing::info!("CORS restricted to: {origins}");
+            CorsLayer::new()
+                .allow_origin(parsed)
+                .allow_methods(tower_http::cors::Any)
+                .allow_headers(tower_http::cors::Any)
+        }
+        _ => {
+            tracing::warn!("FRONTEND_ORIGIN not set; allowing any origin (fine for local dev, not for production)");
+            CorsLayer::permissive()
+        }
+    }
+}
+
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c().await.ok();
+    tracing::info!("shutdown signal received, draining in-flight requests");
 }
 
 async fn root() -> &'static str {

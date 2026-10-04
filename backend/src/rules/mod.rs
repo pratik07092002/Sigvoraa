@@ -6,6 +6,8 @@ mod unlimited_approval;
 
 #[derive(Debug, Clone)]
 pub struct ParsedInstruction {
+    /// Kept for debugging/future rules even though no current rule reads it.
+    #[allow(dead_code)]
     pub program: String,
     pub program_id: String,
     pub parsed: Option<serde_json::Value>,
@@ -16,8 +18,11 @@ pub struct TokenBalance {
     pub account_index: u8,
     pub account: Option<String>,
     pub mint: String,
+    /// Kept for debugging/future rules even though no current rule reads it.
+    #[allow(dead_code)]
     pub owner: Option<String>,
     pub amount: u64,
+    #[allow(dead_code)]
     pub decimals: u8,
 }
 

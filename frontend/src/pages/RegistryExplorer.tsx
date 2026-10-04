@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
+import { Database, Loader2, ExternalLink, Inbox } from "lucide-react";
 import { fetchThreatEntries } from "../lib/registry";
 
-const STATUS_COLOR: Record<string, string> = {
-  active: "text-red-400",
-  disputed: "text-amber-400",
-  cleared: "text-slate-500",
+const STATUS_STYLE: Record<string, string> = {
+  active: "bg-status-critical/15 text-status-critical",
+  disputed: "bg-status-warning/15 text-status-warning",
+  cleared: "bg-white/10 text-slate-400",
 };
 
 export function RegistryExplorer() {
@@ -16,53 +17,75 @@ export function RegistryExplorer() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-6 py-8">
-      <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-        <h2 className="mb-1 text-sm font-medium text-slate-300">On-chain Threat Registry</h2>
-        <p className="mb-4 text-sm text-slate-500">
-          Every entry here is a PDA on the Threat Registry Anchor program, verifiable by anyone.
-        </p>
+    <div className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
+          <Database className="h-5 w-5" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-white">Registry Explorer</h1>
+          <p className="text-sm text-slate-400">
+            Every entry is a PDA on the Threat Registry Anchor program, read directly from the chain.
+          </p>
+        </div>
+      </div>
 
-        {entries.isLoading && <p className="text-sm text-slate-500">Loading on-chain entries...</p>}
-        {entries.isError && <p className="text-sm text-red-400">{(entries.error as Error).message}</p>}
+      <div className="rounded-xl border border-white/10 bg-surface-card p-6">
+        {entries.isLoading && (
+          <p className="flex items-center gap-2 text-sm text-slate-500">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Loading on-chain entries...
+          </p>
+        )}
+        {entries.isError && <p className="text-sm text-status-critical">{(entries.error as Error).message}</p>}
         {entries.data && entries.data.length === 0 && (
-          <p className="text-sm text-slate-500">No threats have been reported to the registry yet.</p>
+          <div className="flex flex-col items-center gap-2 py-10 text-center">
+            <Inbox className="h-8 w-8 text-slate-600" />
+            <p className="text-sm text-slate-500">No threats have been reported to the registry yet.</p>
+          </div>
         )}
 
         {entries.data && entries.data.length > 0 && (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wide text-slate-500">
-                <th className="pb-2 pr-4 font-medium">Target</th>
-                <th className="pb-2 pr-4 font-medium">Category</th>
-                <th className="pb-2 pr-4 font-medium">Severity</th>
-                <th className="pb-2 pr-4 font-medium">Status</th>
-                <th className="pb-2 font-medium">Explorer</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {entries.data.map((entry) => (
-                <tr key={entry.pubkey}>
-                  <td className="py-2 pr-4 font-mono text-xs text-slate-300">{entry.target}</td>
-                  <td className="py-2 pr-4 text-slate-300">{entry.category}</td>
-                  <td className="py-2 pr-4 text-slate-300">{entry.severity}</td>
-                  <td className={`py-2 pr-4 font-medium ${STATUS_COLOR[entry.status] ?? "text-slate-400"}`}>
-                    {entry.status}
-                  </td>
-                  <td className="py-2">
-                    <a
-                      href={entry.explorerUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-purple-400 hover:underline"
-                    >
-                      View
-                    </a>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wide text-slate-500">
+                  <th className="pb-3 pr-4 font-medium">Target</th>
+                  <th className="pb-3 pr-4 font-medium">Category</th>
+                  <th className="pb-3 pr-4 font-medium">Severity</th>
+                  <th className="pb-3 pr-4 font-medium">Status</th>
+                  <th className="pb-3 font-medium">Explorer</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {entries.data.map((entry) => (
+                  <tr key={entry.pubkey}>
+                    <td className="py-3 pr-4 font-mono text-xs text-slate-300">{entry.target}</td>
+                    <td className="py-3 pr-4 text-slate-300">{entry.category}</td>
+                    <td className="py-3 pr-4 font-mono-tabular text-slate-300">{entry.severity}</td>
+                    <td className="py-3 pr-4">
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLE[entry.status] ?? "bg-white/10 text-slate-400"}`}
+                      >
+                        {entry.status}
+                      </span>
+                    </td>
+                    <td className="py-3">
+                      <a
+                        href={entry.explorerUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-brand-300 hover:text-brand-200 hover:underline"
+                      >
+                        View
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

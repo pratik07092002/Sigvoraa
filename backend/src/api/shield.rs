@@ -1,7 +1,9 @@
-use crate::{shield, AppState};
-use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
+use crate::{api::error::ApiError, shield, AppState};
+use axum::{extract::State, routing::post, Json, Router};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+
+const MAX_TX_BASE64_LEN: usize = 4096;
 
 #[derive(Deserialize)]
 pub struct ShieldCheckRequest {
@@ -32,10 +34,18 @@ pub fn routes() -> Router<Arc<AppState>> {
 async fn check(
     State(state): State<Arc<AppState>>,
     Json(req): Json<ShieldCheckRequest>,
-) -> Result<Json<ShieldCheckResponse>, (StatusCode, String)> {
-    let result = shield::check(&req.transaction, &state.rpc, state.db.as_ref())
+) -> Result<Json<ShieldCheckResponse>, ApiError> {
+    let transaction = req.transaction.trim();
+    if transaction.is_empty() {
+        return Err(ApiError::bad_request("transaction is required"));
+    }
+    if transaction.len() > MAX_TX_BASE64_LEN {
+        return Err(ApiError::bad_request("transaction payload is too large"));
+    }
+
+    let result = shield::check(transaction, &state.rpc, state.db.as_ref())
         .await
-        .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()))?;
+        .map_err(|err| ApiError::bad_request(err.to_string()))?;
 
     Ok(Json(ShieldCheckResponse {
         verdict: result.verdict.to_string(),
