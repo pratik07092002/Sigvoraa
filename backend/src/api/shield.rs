@@ -1,5 +1,5 @@
-use crate::AppState;
-use axum::{extract::State, routing::post, Json, Router};
+use crate::{shield, AppState};
+use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -10,10 +10,19 @@ pub struct ShieldCheckRequest {
 }
 
 #[derive(Serialize)]
+pub struct Finding {
+    pub rule: &'static str,
+    pub severity: u8,
+    pub explanation: String,
+}
+
+#[derive(Serialize)]
 pub struct ShieldCheckResponse {
     pub verdict: String,
     pub risk_score: u8,
     pub summary: String,
+    pub would_fail: bool,
+    pub findings: Vec<Finding>,
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -21,13 +30,26 @@ pub fn routes() -> Router<Arc<AppState>> {
 }
 
 async fn check(
-    State(_state): State<Arc<AppState>>,
-    Json(_req): Json<ShieldCheckRequest>,
-) -> Json<ShieldCheckResponse> {
-    // TODO(Phase 4): simulateTransaction + rules engine + AI explainer.
-    Json(ShieldCheckResponse {
-        verdict: "safe".to_string(),
-        risk_score: 0,
-        summary: "Wallet Shield is not wired up yet.".to_string(),
-    })
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ShieldCheckRequest>,
+) -> Result<Json<ShieldCheckResponse>, (StatusCode, String)> {
+    let result = shield::check(&req.transaction, &state.rpc, state.db.as_ref())
+        .await
+        .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()))?;
+
+    Ok(Json(ShieldCheckResponse {
+        verdict: result.verdict.to_string(),
+        risk_score: result.risk_score,
+        summary: result.summary,
+        would_fail: result.would_fail,
+        findings: result
+            .findings
+            .into_iter()
+            .map(|f| Finding {
+                rule: f.rule_id,
+                severity: f.severity,
+                explanation: f.explanation,
+            })
+            .collect(),
+    }))
 }

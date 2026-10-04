@@ -101,6 +101,28 @@ pub async fn get_stats(pool: &PgPool) -> Result<Stats, sqlx::Error> {
     })
 }
 
+pub async fn insert_shield_check(
+    pool: &PgPool,
+    wallet: &str,
+    verdict: &str,
+    risk_score: u8,
+    summary: &str,
+) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        r#"
+        INSERT INTO shield_checks (wallet, verdict, risk_score, summary)
+        VALUES ($1, $2, $3, $4)
+        "#,
+    )
+    .bind(wallet)
+    .bind(verdict)
+    .bind(risk_score as i16)
+    .bind(summary)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
 pub struct FlaggedAddress {
     pub category: String,
     pub risk_score: i16,

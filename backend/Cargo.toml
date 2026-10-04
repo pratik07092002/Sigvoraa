@@ -19,8 +19,12 @@ sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chron
 solana-client = "2"
 solana-sdk = "2"
 solana-transaction-status = "2"
+solana-account-decoder = "2"
 borsh = "1"
 futures-util = "0.3"
+spl-token = { version = "7", features = ["no-entrypoint"] }
+base64 = "0.22"
+bincode = "1"
 reqwest = { version = "0.12", features = ["json"] }
 dotenvy = "0.15"
 tracing = "0.1"

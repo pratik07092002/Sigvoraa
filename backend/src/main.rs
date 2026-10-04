@@ -4,8 +4,10 @@ mod rules;
 mod ai;
 mod registry;
 mod db;
+mod shield;
 
 use axum::{routing::get, Router};
+use solana_client::nonblocking::rpc_client::RpcClient;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tower_http::cors::CorsLayer;
@@ -13,6 +15,7 @@ use tower_http::trace::TraceLayer;
 
 pub struct AppState {
     pub db: Option<sqlx::PgPool>,
+    pub rpc: RpcClient,
 }
 
 #[tokio::main]
@@ -45,7 +48,11 @@ async fn main() -> anyhow::Result<()> {
         tokio::spawn(indexer::run(pool.clone()));
     }
 
-    let state = Arc::new(AppState { db: db_pool });
+    let rpc_url = std::env::var("SOLANA_RPC_URL").unwrap_or_else(|_| "https://api.devnet.solana.com".to_string());
+    let state = Arc::new(AppState {
+        db: db_pool,
+        rpc: RpcClient::new(rpc_url),
+    });
 
     let app = Router::new()
         .route("/", get(root))

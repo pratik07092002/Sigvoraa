@@ -3557,6 +3557,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
+ "base64 0.22.1",
+ "bincode",
  "borsh 1.8.1",
  "chrono",
  "dotenvy",
@@ -3564,9 +3566,11 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "solana-account-decoder",
  "solana-client",
  "solana-sdk",
  "solana-transaction-status",
+ "spl-token 7.0.0",
  "sqlx",
  "thiserror 1.0.69",
  "tokio",
@@ -3898,7 +3902,7 @@ dependencies = [
  "solana-sysvar",
  "solana-vote-interface",
  "spl-generic-token",
- "spl-token",
+ "spl-token 8.0.0",
  "spl-token-2022",
  "spl-token-group-interface",
  "spl-token-metadata-interface",
@@ -5821,7 +5825,7 @@ dependencies = [
  "solana-vote-interface",
  "spl-associated-token-account",
  "spl-memo",
- "spl-token",
+ "spl-token 8.0.0",
  "spl-token-2022",
  "spl-token-group-interface",
  "spl-token-metadata-interface",
@@ -5987,7 +5991,7 @@ dependencies = [
  "num-traits",
  "solana-program",
  "spl-associated-token-account-client",
- "spl-token",
+ "spl-token 8.0.0",
  "spl-token-2022",
  "thiserror 2.0.21",
 ]
@@ -6156,6 +6160,21 @@ dependencies = [
 
 [[package]]
 name = "spl-token"
+version = "7.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed320a6c934128d4f7e54fe00e16b8aeaecf215799d060ae14f93378da6dc834"
+dependencies = [
+ "arrayref",
+ "bytemuck",
+ "num-derive",
+ "num-traits",
+ "num_enum",
+ "solana-program",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "spl-token"
 version = "8.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "053067c6a82c705004f91dae058b11b4780407e9ccd6799dc9e7d0fab5f242da"
@@ -6215,7 +6234,7 @@ dependencies = [
  "spl-elgamal-registry",
  "spl-memo",
  "spl-pod",
- "spl-token",
+ "spl-token 8.0.0",
  "spl-token-confidential-transfer-ciphertext-arithmetic",
  "spl-token-confidential-transfer-proof-extraction",
  "spl-token-confidential-transfer-proof-generation",
