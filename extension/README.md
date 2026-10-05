@@ -22,7 +22,9 @@ Outputs to `dist/`.
 1. `chrome://extensions`
 2. Enable **Developer mode** (top right)
 3. **Load unpacked** → select the `extension/` folder (not `dist/` — the manifest lives one level up and references `dist/*.js`)
-4. Open the toolbar icon to confirm protection is on and see/edit the backend URL (defaults to the live CloudFront deployment; point it at `http://localhost:8090` for local backend dev)
+4. Open the toolbar icon to confirm protection is on
+
+The backend URL is hardcoded to the live CloudFront deployment (`src/types.ts`, `API_BASE_URL`) rather than user-configurable — for local backend dev, edit that constant (and add the matching origin to `manifest.json`'s `host_permissions`), then rebuild.
 
 ## Testing without a real dApp
 

@@ -138,57 +138,6 @@
       input:checked + .slider::before {
         transform: translateX(15px);
       }
-      details {
-        margin-top: 10px;
-      }
-      summary {
-        cursor: pointer;
-        font-size: 11.5px;
-        color: #a1a1aa;
-        font-weight: 500;
-        list-style: none;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        user-select: none;
-      }
-      summary::-webkit-details-marker {
-        display: none;
-      }
-      summary svg {
-        width: 11px;
-        height: 11px;
-        transition: transform 0.15s;
-      }
-      details[open] summary svg {
-        transform: rotate(90deg);
-      }
-      .field {
-        margin-top: 8px;
-      }
-      label {
-        display: block;
-        font-size: 10.5px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #71717a;
-        margin-bottom: 4px;
-      }
-      input[type="text"] {
-        width: 100%;
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-        color: #e4e4e7;
-        padding: 6px 8px;
-        font-size: 11.5px;
-        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-      }
-      input[type="text"]:focus {
-        outline: none;
-        border-color: var(--brand-500);
-      }
       .footer {
         display: flex;
         align-items: center;
@@ -243,17 +192,6 @@
             <span class="slider"></span>
           </label>
         </div>
-
-        <details>
-          <summary>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            Advanced
-          </summary>
-          <div class="field">
-            <label for="apiBaseUrl">Backend URL</label>
-            <input type="text" id="apiBaseUrl" spellcheck="false" />
-          </div>
-        </details>
       </div>
 
       <div class="footer">

@@ -1,5 +1,5 @@
 import type { BackgroundCheckRequest, CheckResponse, Settings } from "./types";
-import { DEFAULT_SETTINGS } from "./types";
+import { API_BASE_URL, DEFAULT_SETTINGS } from "./types";
 
 async function getSettings(): Promise<Settings> {
   const stored = await chrome.storage.local.get(DEFAULT_SETTINGS);
@@ -13,7 +13,7 @@ async function checkTransaction(transactionBase64: string): Promise<CheckRespons
   }
 
   try {
-    const res = await fetch(`${settings.apiBaseUrl}/api/shield/check`, {
+    const res = await fetch(`${API_BASE_URL}/api/shield/check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ transaction: transactionBase64 }),

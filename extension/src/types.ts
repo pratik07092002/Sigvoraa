@@ -50,10 +50,12 @@ export interface BackgroundCheckRequest {
 
 export interface Settings {
   enabled: boolean;
-  apiBaseUrl: string;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
-  apiBaseUrl: "https://dcuoy748wkqfz.cloudfront.net",
 };
+
+// Not user-configurable — see extension/README.md if you need to point this
+// at a local backend during development.
+export const API_BASE_URL = "https://dcuoy748wkqfz.cloudfront.net";

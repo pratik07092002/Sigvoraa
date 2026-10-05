@@ -20,11 +20,7 @@
     "service_worker": "dist/background.js"
   },
   "permissions": ["storage"],
-  "host_permissions": [
-    "https://dcuoy748wkqfz.cloudfront.net/*",
-    "http://localhost:8090/*",
-    "http://127.0.0.1:8090/*"
-  ],
+  "host_permissions": ["https://dcuoy748wkqfz.cloudfront.net/*"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
