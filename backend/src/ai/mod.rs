@@ -2,7 +2,7 @@ use crate::rules::Finding;
 use serde_json::json;
 
 const DEFAULT_ANTHROPIC_MODEL: &str = "claude-haiku-4-5-20251001";
-const DEFAULT_GROQ_MODEL: &str = "llama-3.3-70b-versatile";
+const DEFAULT_GROQ_MODEL: &str = "openai/gpt-oss-20b";
 
 pub async fn explain_risk(findings: &[Finding], verdict: &str, would_fail: bool, logs: &[String]) -> String {
     let key = std::env::var("LLM_API_KEY").unwrap_or_default();
