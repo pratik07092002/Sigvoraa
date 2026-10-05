@@ -1,7 +1,8 @@
 use crate::rules::Finding;
 use serde_json::json;
 
-const DEFAULT_MODEL: &str = "claude-haiku-4-5-20251001";
+const DEFAULT_ANTHROPIC_MODEL: &str = "claude-haiku-4-5-20251001";
+const DEFAULT_GROQ_MODEL: &str = "llama-3.3-70b-versatile";
 
 pub async fn explain_risk(findings: &[Finding], verdict: &str, would_fail: bool, logs: &[String]) -> String {
     let key = std::env::var("LLM_API_KEY").unwrap_or_default();
@@ -40,8 +41,7 @@ async fn call_llm(
     would_fail: bool,
     logs: &[String],
 ) -> anyhow::Result<String> {
-    let url = std::env::var("LLM_API_URL").unwrap_or_else(|_| "https://api.anthropic.com/v1/messages".to_string());
-    let model = std::env::var("LLM_MODEL").unwrap_or_else(|_| DEFAULT_MODEL.to_string());
+    let provider = std::env::var("LLM_PROVIDER").unwrap_or_else(|_| "anthropic".to_string());
 
     let findings_data: Vec<_> = findings
         .iter()
@@ -65,26 +65,59 @@ async fn call_llm(
     );
 
     let client = reqwest::Client::new();
-    let res = client
-        .post(&url)
-        .header("x-api-key", key)
-        .header("anthropic-version", "2023-06-01")
-        .header("content-type", "application/json")
-        .json(&json!({
-            "model": model,
-            "max_tokens": 200,
-            "messages": [{"role": "user", "content": prompt}],
-        }))
-        .send()
-        .await?
-        .error_for_status()?;
+    let text = match provider.as_str() {
+        "groq" => {
+            let url = std::env::var("LLM_API_URL")
+                .unwrap_or_else(|_| "https://api.groq.com/openai/v1/chat/completions".to_string());
+            let model = std::env::var("LLM_MODEL").unwrap_or_else(|_| DEFAULT_GROQ_MODEL.to_string());
 
-    let body: serde_json::Value = res.json().await?;
-    let text = body["content"][0]["text"]
-        .as_str()
-        .ok_or_else(|| anyhow::anyhow!("unexpected LLM response shape"))?;
+            let res = client
+                .post(&url)
+                .bearer_auth(key)
+                .header("content-type", "application/json")
+                .json(&json!({
+                    "model": model,
+                    "max_tokens": 200,
+                    "messages": [{"role": "user", "content": prompt}],
+                }))
+                .send()
+                .await?
+                .error_for_status()?;
 
-    if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(text) {
+            let body: serde_json::Value = res.json().await?;
+            body["choices"][0]["message"]["content"]
+                .as_str()
+                .ok_or_else(|| anyhow::anyhow!("unexpected Groq response shape"))?
+                .to_string()
+        }
+        _ => {
+            let url =
+                std::env::var("LLM_API_URL").unwrap_or_else(|_| "https://api.anthropic.com/v1/messages".to_string());
+            let model = std::env::var("LLM_MODEL").unwrap_or_else(|_| DEFAULT_ANTHROPIC_MODEL.to_string());
+
+            let res = client
+                .post(&url)
+                .header("x-api-key", key)
+                .header("anthropic-version", "2023-06-01")
+                .header("content-type", "application/json")
+                .json(&json!({
+                    "model": model,
+                    "max_tokens": 200,
+                    "messages": [{"role": "user", "content": prompt}],
+                }))
+                .send()
+                .await?
+                .error_for_status()?;
+
+            let body: serde_json::Value = res.json().await?;
+            body["content"][0]["text"]
+                .as_str()
+                .ok_or_else(|| anyhow::anyhow!("unexpected LLM response shape"))?
+                .to_string()
+        }
+    };
+
+    if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&text) {
         if let Some(explanation) = parsed["explanation"].as_str() {
             return Ok(explanation.to_string());
         }
