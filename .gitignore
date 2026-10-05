@@ -20,6 +20,9 @@ backend/.cargo/config.toml
 frontend/dist
 frontend/.vite
 
+# extension (esbuild)
+extension/dist
+
 # misc
 *.log
 .vscode

@@ -11,6 +11,7 @@ Built for the Colosseum hackathon (Web3 x AI x Cybersecurity track). Deployed on
 | **Runtime Monitor** | Live | Streams transactions for watched addresses via `logsSubscribe`, runs 5 detection rules, writes alerts to Postgres. |
 | **Wallet Shield** | Live | Simulates an unsigned transaction, runs the same rules engine, returns a Safe/Caution/Danger verdict with an AI-generated plain-language explanation. |
 | **Threat Registry** | Live | Anchor program on devnet. Alerts can be reported on-chain with one click; anyone can read entries directly via the Registry Explorer, no backend required. |
+| **Browser Extension** | v1 (Phantom only) | Intercepts `window.solana`, runs every transaction through Wallet Shield before Phantom's approval popup opens. See `extension/README.md`. |
 | **Program Scanner** | Not built | Scoped as a stretch goal in the original plan; out of scope for this submission. |
 
 ## Repo layout
@@ -93,4 +94,4 @@ npm run dev
 
 ## Status
 
-All phases from the original build plan are implemented and verified live against devnet (not just "it compiles"): the Threat Registry program, the indexer + 5-rule engine, Wallet Shield simulation + AI explanation, the full frontend, and the registry write flow closing the loop from alert to on-chain record. Program Scanner and a browser extension remain documented stretch goals, out of scope here.
+All phases from the original build plan are implemented and verified live against devnet (not just "it compiles"): the Threat Registry program, the indexer + 5-rule engine, Wallet Shield simulation + AI explanation, the full frontend, the registry write flow closing the loop from alert to on-chain record, and a Phantom-only browser extension that runs Wallet Shield checks before signing. Program Scanner remains a documented stretch goal, out of scope here.

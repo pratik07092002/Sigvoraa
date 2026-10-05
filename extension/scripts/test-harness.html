@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>SentinelMesh extension test harness</title>
+<style>
+  body { font-family: ui-sans-serif, system-ui, sans-serif; background: #111; color: #eee; padding: 24px; }
+  button { padding: 10px 16px; border-radius: 8px; border: none; background: #7c3aed; color: white; font-weight: 600; cursor: pointer; margin-right: 8px; }
+  #log { margin-top: 16px; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #9ca3af; }
+</style>
+</head>
+<body>
+<h2>SentinelMesh extension test harness</h2>
+<p>Mocks <code>window.solana</code> (Phantom) and <code>chrome.runtime</code>/<code>chrome.storage</code>, then loads the real inject.js + content.js bundles unmodified.</p>
+<button id="danger">Sign "danger" transaction</button>
+<button id="safe">Sign "safe" transaction</button>
+<button id="unreachable">Sign (backend unreachable)</button>
+<div id="log"></div>
+
+<script>
+  const log = (...args) => {
+    document.getElementById("log").textContent += args.join(" ") + "\n";
+  };
+
+  let nextVerdict = "safe";
+
+  // --- mock chrome.* extension APIs (content.ts and background logic both run in-page here) ---
+  window.chrome = {
+    runtime: {
+      sendMessage: async (msg) => {
+        log("[background mock] received", JSON.stringify(msg));
+        await new Promise((r) => setTimeout(r, 1200));
+        if (nextVerdict === "unreachable") {
+          return { ok: false, error: "simulated network failure" };
+        }
+        if (nextVerdict === "safe") {
+          return { ok: true, result: { verdict: "safe", risk_score: 0, summary: "Looks fine.", would_fail: false, findings: [] } };
+        }
+        return {
+          ok: true,
+          result: {
+            verdict: "danger",
+            risk_score: 70,
+            summary: "Full balance delegate approval.",
+            would_fail: false,
+            findings: [{ rule: "unlimited_delegate_approval", severity: 70, explanation: "Approves entire balance to an unfamiliar address." }],
+          },
+        };
+      },
+    },
+    storage: {
+      local: {
+        get: async (defaults) => defaults,
+        set: async () => {},
+      },
+    },
+  };
+
+  // --- mock Phantom's injected provider + a fake Transaction-like object ---
+  function makeFakeTx() {
+    return {
+      version: undefined, // legacy transaction shape
+      serialize: () => new Uint8Array([1, 2, 3, 4]),
+    };
+  }
+
+  window.solana = {
+    async signTransaction(tx) {
+      log("[page] original Phantom signTransaction called — would open Phantom's approval popup now");
+      return tx;
+    },
+  };
+</script>
+<script src="../dist/inject.js"></script>
+<script src="../dist/content.js"></script>
+<script>
+  async function run(verdict) {
+    nextVerdict = verdict;
+    document.getElementById("log").textContent = "";
+    log("Calling window.solana.signTransaction()...");
+    try {
+      await window.solana.signTransaction(makeFakeTx());
+      log("RESULT: proceeded (original Phantom method was called)");
+    } catch (err) {
+      log("RESULT: rejected —", err.message);
+    }
+  }
+  document.getElementById("danger").onclick = () => run("danger");
+  document.getElementById("safe").onclick = () => run("safe");
+  document.getElementById("unreachable").onclick = () => run("unreachable");
+</script>
+</body>
+</html>
