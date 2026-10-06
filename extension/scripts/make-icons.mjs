@@ -5,8 +5,8 @@ import { deflateSync } from "node:zlib";
 import { writeFileSync } from "node:fs";
 
 const VIEWBOX = 32;
-const PURPLE = [124, 58, 237];
-const STROKE = [196, 181, 253];
+const TEAL = [0, 128, 105];
+const STROKE = [109, 206, 176];
 const WHITE = [255, 255, 255];
 const SS = 4; // supersampling factor for cheap antialiasing
 
@@ -64,7 +64,7 @@ function distToSegment(px, py, [x1, y1], [x2, y2]) {
 function colorAt(vx, vy) {
   const onCheck = checkSegments.some(([a, b]) => distToSegment(vx, vy, a, b) <= CHECK_STROKE_WIDTH / 2);
   if (onCheck) return WHITE;
-  if (pointInPolygon(vx, vy, shieldPolygon)) return PURPLE;
+  if (pointInPolygon(vx, vy, shieldPolygon)) return TEAL;
 
   // thin outer stroke: just outside the polygon but within ~0.6 viewBox units
   for (let i = 0, j = shieldPolygon.length - 1; i < shieldPolygon.length; j = i++) {

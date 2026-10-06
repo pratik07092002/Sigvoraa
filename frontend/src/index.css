@@ -5,25 +5,25 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Status palette -- validated for dark surfaces, never reused for brand/series color. */
-  --color-status-good: #0ca30c;
+  --color-status-good: #2cb67d;
   --color-status-warning: #fab219;
   --color-status-critical: #d03b3b;
 
-  /* Brand (violet), used for identity/accents, never for data-status encoding. */
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
+  /* Brand (teal), used for identity/accents, never for data-status encoding. */
+  --color-brand-50: #e6f7f3;
+  --color-brand-100: #c3ebe1;
+  --color-brand-200: #9bdfcc;
+  --color-brand-300: #6dceb0;
+  --color-brand-400: #35bb93;
+  --color-brand-500: #00a884;
+  --color-brand-600: #008069;
+  --color-brand-700: #006656;
+  --color-brand-800: #054c40;
+  --color-brand-900: #053328;
 
-  --color-surface-page: #09090b;
-  --color-surface-card: #111113;
-  --color-surface-raised: #18181b;
+  --color-surface-page: #0b141a;
+  --color-surface-card: #111b21;
+  --color-surface-raised: #202c33;
 }
 
 :root {
@@ -41,10 +41,10 @@ body {
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 168, 132, 0.4);
   }
   100% {
-    box-shadow: 0 0 0 8px rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 8px rgba(0, 168, 132, 0);
   }
 }
 

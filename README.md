@@ -1,4 +1,4 @@
-# SentinelMesh
+# Sigvoraa
 
 AI-powered security layer for Solana: real-time threat detection, AI program auditing, and wallet-side transaction protection — built on an on-chain Threat Registry any dApp or wallet can query.
 

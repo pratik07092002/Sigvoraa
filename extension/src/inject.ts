@@ -6,10 +6,10 @@ interface SolanaProvider {
   signTransaction?: (tx: SolanaTx) => Promise<SolanaTx>;
   signAllTransactions?: (txs: SolanaTx[]) => Promise<SolanaTx[]>;
   signAndSendTransaction?: (tx: SolanaTx, opts?: unknown) => Promise<unknown>;
-  __sentinelmeshWrapped?: boolean;
+  __sigvoraaWrapped?: boolean;
 }
 
-const WRAPPED = Symbol("sentinelmesh-wrapped");
+const WRAPPED = Symbol("sigvoraa-wrapped");
 
 function toBase64(bytes: Uint8Array): string {
   let binary = "";
@@ -37,7 +37,7 @@ function requestDecision(transactionBase64: string, method: PageCheckRequest["me
     function onMessage(event: MessageEvent) {
       if (event.source !== window) return;
       const data = event.data as PageCheckDecision | undefined;
-      if (!data || data.source !== "sentinelmesh-content" || data.type !== "check-decision") return;
+      if (!data || data.source !== "sigvoraa-content" || data.type !== "check-decision") return;
       if (data.requestId !== requestId) return;
       clearTimeout(timeout);
       window.removeEventListener("message", onMessage);
@@ -46,7 +46,7 @@ function requestDecision(transactionBase64: string, method: PageCheckRequest["me
     window.addEventListener("message", onMessage);
 
     const req: PageCheckRequest = {
-      source: "sentinelmesh-inject",
+      source: "sigvoraa-inject",
       type: "check-transaction",
       requestId,
       transactionBase64,
@@ -64,7 +64,7 @@ function wrapProvider(provider: SolanaProvider | undefined | null): void {
   if (originalSign) {
     provider.signTransaction = async (tx: SolanaTx) => {
       const proceed = await requestDecision(serializeTx(tx), "signTransaction");
-      if (!proceed) throw new Error("Rejected by SentinelMesh Wallet Shield");
+      if (!proceed) throw new Error("Rejected by Sigvoraa Wallet Shield");
       return originalSign(tx);
     };
   }
@@ -74,7 +74,7 @@ function wrapProvider(provider: SolanaProvider | undefined | null): void {
     provider.signAllTransactions = async (txs: SolanaTx[]) => {
       for (const tx of txs) {
         const proceed = await requestDecision(serializeTx(tx), "signAllTransactions");
-        if (!proceed) throw new Error("Rejected by SentinelMesh Wallet Shield");
+        if (!proceed) throw new Error("Rejected by Sigvoraa Wallet Shield");
       }
       return originalSignAll(txs);
     };
@@ -84,7 +84,7 @@ function wrapProvider(provider: SolanaProvider | undefined | null): void {
   if (originalSignAndSend) {
     provider.signAndSendTransaction = async (tx: SolanaTx, opts?: unknown) => {
       const proceed = await requestDecision(serializeTx(tx), "signAndSendTransaction");
-      if (!proceed) throw new Error("Rejected by SentinelMesh Wallet Shield");
+      if (!proceed) throw new Error("Rejected by Sigvoraa Wallet Shield");
       return originalSignAndSend(tx, opts);
     };
   }

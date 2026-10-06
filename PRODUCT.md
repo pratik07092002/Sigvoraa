@@ -1,4 +1,4 @@
-# SentinelMesh
+# Sigvoraa
 
 AI-powered security layer for Solana — built for the Colosseum hackathon (Web3 x AI x Cybersecurity track).
 
@@ -9,15 +9,15 @@ AI-powered security layer for Solana — built for the Colosseum hackathon (Web3
 
 Wallets sign transactions blind. A user approving a token delegate, granting a program access, or interacting with an unfamiliar contract has no plain-language explanation of what that transaction actually does to their funds — until it's too late. Existing security tooling is either reactive (post-mortem analysis after a drain) or locked inside a single wallet's proprietary blocklist, with no shared, verifiable record other dApps or wallets can check.
 
-## What SentinelMesh does
+## What Sigvoraa does
 
 Three pieces, one shared rules engine:
 
 **Runtime Monitor** — streams live transactions for a set of watched addresses via Solana's `logsSubscribe`, runs them through 5 detection rules, and writes alerts to Postgres as they happen.
 
-**Wallet Shield** — before a user signs, SentinelMesh simulates the *unsigned* transaction, runs the same detection rules against the simulated result, and returns a Safe / Caution / Danger verdict with an AI-generated plain-language explanation of what the transaction would actually do.
+**Wallet Shield** — before a user signs, Sigvoraa simulates the *unsigned* transaction, runs the same detection rules against the simulated result, and returns a Safe / Caution / Danger verdict with an AI-generated plain-language explanation of what the transaction would actually do.
 
-**Threat Registry** — an Anchor program on devnet. Any flagged alert can be reported on-chain with one click, becoming a permanent, publicly queryable record. Any dApp or wallet can read these entries directly from the chain — no SentinelMesh backend required, no trust in a centralized blocklist.
+**Threat Registry** — an Anchor program on devnet. Any flagged alert can be reported on-chain with one click, becoming a permanent, publicly queryable record. Any dApp or wallet can read these entries directly from the chain — no Sigvoraa backend required, no trust in a centralized blocklist.
 
 The key design point: Runtime Monitor and Wallet Shield both run the exact same rule functions over a shared `TxContext` — one rule implementation, two entry points (confirmed on-chain transactions vs. pre-signature simulation).
 

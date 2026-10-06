@@ -1,6 +1,6 @@
-# SentinelMesh Wallet Shield (browser extension)
+# Sigvoraa Wallet Shield (browser extension)
 
-Intercepts Phantom's injected `window.solana` provider and runs every transaction through SentinelMesh's Wallet Shield (`POST /api/shield/check`, same backend and rules engine as the web app) before Phantom's own approval popup opens.
+Intercepts Phantom's injected `window.solana` provider and runs every transaction through Sigvoraa's Wallet Shield (`POST /api/shield/check`, same backend and rules engine as the web app) before Phantom's own approval popup opens.
 
 ## Scope (v1)
 

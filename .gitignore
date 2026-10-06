@@ -26,3 +26,4 @@ extension/dist
 # misc
 *.log
 .vscode
+fake-drainer-test.html

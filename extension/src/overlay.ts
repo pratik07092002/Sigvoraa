@@ -1,7 +1,7 @@
 import type { ShieldCheckResult, Verdict } from "./types";
 
 const VERDICT = {
-  safe: { color: "#0ca30c", label: "Safe", icon: iconShieldCheck() },
+  safe: { color: "#2cb67d", label: "Safe", icon: iconShieldCheck() },
   caution: { color: "#fab219", label: "Caution", icon: iconShieldAlert() },
   danger: { color: "#d03b3b", label: "Danger", icon: iconShieldX() },
 } satisfies Record<Verdict, { color: string; label: string; icon: string }>;
@@ -9,7 +9,7 @@ const VERDICT = {
 function severityColor(severity: number): string {
   if (severity >= 70) return "#d03b3b";
   if (severity >= 30) return "#fab219";
-  return "#0ca30c";
+  return "#2cb67d";
 }
 
 // Inline, lucide-style icons (24x24, stroke-based) — no external icon font/network fetch.
@@ -35,7 +35,7 @@ function svg(paths: string, extraAttrs = ""): string {
 
 function mountShadowRoot(): ShadowRoot {
   const host = document.createElement("div");
-  host.id = `sentinelmesh-overlay-${Math.random().toString(36).slice(2)}`;
+  host.id = `sigvoraa-overlay-${Math.random().toString(36).slice(2)}`;
   host.style.all = "initial";
   (document.body ?? document.documentElement).appendChild(host);
   return host.attachShadow({ mode: "open" });
@@ -52,7 +52,7 @@ const BASE_STYLE = `
     z-index: 2147483647; animation: sm-fade-in 0.15s ease-out;
   }
   .card {
-    background: #111113; color: #e4e4e7; border: 1px solid rgba(255,255,255,0.08);
+    background: #111b21; color: #e4e4e7; border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px; padding: 22px; width: 380px; max-height: 85vh; overflow-y: auto;
     box-shadow: 0 25px 60px rgba(0,0,0,0.6); animation: sm-pop-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -60,7 +60,7 @@ const BASE_STYLE = `
   @keyframes sm-pop-in { from { opacity: 0; transform: scale(0.96) translateY(4px); } to { opacity: 1; transform: none; } }
 
   .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-  .brand-icon { width: 30px; height: 30px; border-radius: 8px; background: rgba(139,92,246,0.15); color: #a78bfa; padding: 6px; flex-shrink: 0; }
+  .brand-icon { width: 30px; height: 30px; border-radius: 8px; background: rgba(0,168,132,0.15); color: #35bb93; padding: 6px; flex-shrink: 0; }
   .brand-title { font-size: 13px; font-weight: 700; color: #fff; }
   .brand-sub { font-size: 11px; color: #71717a; margin-top: 1px; }
 
@@ -98,12 +98,12 @@ const BASE_STYLE = `
   button { flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.12s; font-family: inherit; }
   .btn-secondary { background: rgba(255,255,255,0.08); color: #e4e4e7; }
   .btn-secondary:hover { background: rgba(255,255,255,0.13); }
-  .btn-danger { background: #7c3aed; color: white; }
-  .btn-danger:hover { background: #8b5cf6; }
+  .btn-danger { background: #008069; color: white; }
+  .btn-danger:hover { background: #00a884; }
 
   .toast {
     position: fixed; bottom: 20px; right: 20px; z-index: 2147483647;
-    background: #111113; color: #e4e4e7; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+    background: #111b21; color: #e4e4e7; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
     padding: 11px 14px; font-size: 12.5px; display: flex; align-items: center; gap: 9px; max-width: 320px;
     box-shadow: 0 12px 32px rgba(0,0,0,0.5); animation: sm-toast-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -118,7 +118,7 @@ function brandHeader(): string {
     <div class="brand-row">
       <div class="brand-icon">${svg(iconShieldCheck())}</div>
       <div>
-        <div class="brand-title">SentinelMesh Wallet Shield</div>
+        <div class="brand-title">Sigvoraa Wallet Shield</div>
         <div class="brand-sub">Checked before Phantom asked you to sign</div>
       </div>
     </div>
@@ -131,7 +131,7 @@ export function showChecking(): () => void {
   style.textContent = BASE_STYLE;
   const toast = document.createElement("div");
   toast.className = "toast";
-  toast.innerHTML = `<span class="toast-icon toast-spin" style="color:#a78bfa">${svg(iconLoader())}</span><span>Checking transaction with SentinelMesh...</span>`;
+  toast.innerHTML = `<span class="toast-icon toast-spin" style="color:#35bb93">${svg(iconLoader())}</span><span>Checking transaction with Sigvoraa...</span>`;
   root.append(style, toast);
   return () => root.host.remove();
 }

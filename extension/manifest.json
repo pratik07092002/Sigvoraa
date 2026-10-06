@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "SentinelMesh Wallet Shield",
+  "name": "Sigvoraa Wallet Shield",
   "version": "0.1.0",
-  "description": "Checks Phantom transactions against SentinelMesh's rules engine before you sign.",
+  "description": "Checks Phantom transactions against Sigvoraa's rules engine before you sign.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

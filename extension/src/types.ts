@@ -28,7 +28,7 @@ export type CheckResponse = CheckOutcome | CheckFailure;
 
 // page (MAIN world) -> content script (ISOLATED world), via window.postMessage
 export interface PageCheckRequest {
-  source: "sentinelmesh-inject";
+  source: "sigvoraa-inject";
   type: "check-transaction";
   requestId: string;
   transactionBase64: string;
@@ -36,7 +36,7 @@ export interface PageCheckRequest {
 }
 
 export interface PageCheckDecision {
-  source: "sentinelmesh-content";
+  source: "sigvoraa-content";
   type: "check-decision";
   requestId: string;
   proceed: boolean;

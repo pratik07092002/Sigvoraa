@@ -11,7 +11,7 @@ const KNOWN_PROGRAMS: &[&str] = &[
     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL", // Associated Token Account
     "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", // Memo
     "ComputeBudget111111111111111111111111111111", // Compute Budget
-    "Cy4jqUsSnq2Z9rK2Lv7FtkkdziXN7ZBRNGKC5edkbnBU", // SentinelMesh Threat Registry
+    "Cy4jqUsSnq2Z9rK2Lv7FtkkdziXN7ZBRNGKC5edkbnBU", // Sigvoraa Threat Registry
 ];
 
 pub struct UnfamiliarProgramRule;

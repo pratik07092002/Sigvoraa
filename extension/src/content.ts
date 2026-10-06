@@ -4,7 +4,7 @@ import { showFailOpenToast, showSafeToast, showChecking, showVerdictModal } from
 window.addEventListener("message", (event: MessageEvent) => {
   if (event.source !== window) return;
   const data = event.data as PageCheckRequest | undefined;
-  if (!data || data.source !== "sentinelmesh-inject" || data.type !== "check-transaction") return;
+  if (!data || data.source !== "sigvoraa-inject" || data.type !== "check-transaction") return;
 
   handleCheckRequest(data);
 });
@@ -37,7 +37,7 @@ async function handleCheckRequest(req: PageCheckRequest): Promise<void> {
   }
 
   const decision: PageCheckDecision = {
-    source: "sentinelmesh-content",
+    source: "sigvoraa-content",
     type: "check-decision",
     requestId: req.requestId,
     proceed,

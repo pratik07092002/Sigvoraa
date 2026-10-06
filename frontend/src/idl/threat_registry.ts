@@ -10,7 +10,7 @@ export type ThreatRegistry = {
     "name": "threatRegistry",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "SentinelMesh on-chain Threat Registry"
+    "description": "Sigvoraa on-chain Threat Registry"
   },
   "instructions": [
     {

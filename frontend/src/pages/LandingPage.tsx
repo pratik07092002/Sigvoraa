@@ -101,7 +101,7 @@ export function LandingPage() {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-slate-400">
-            SentinelMesh watches programs and wallets in real time, explains risk in plain language before you
+            Sigvoraa watches programs and wallets in real time, explains risk in plain language before you
             sign, and records every verdict on an on-chain registry any dApp can query.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">

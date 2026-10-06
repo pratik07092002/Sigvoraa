@@ -80,7 +80,7 @@ async fn main() -> anyhow::Result<()> {
 
     let port: u16 = std::env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(8080);
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    tracing::info!("SentinelMesh backend listening on {addr}");
+    tracing::info!("Sigvoraa backend listening on {addr}");
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())
         .with_graceful_shutdown(shutdown_signal())
@@ -115,5 +115,5 @@ async fn shutdown_signal() {
 }
 
 async fn root() -> &'static str {
-    "SentinelMesh backend"
+    "Sigvoraa backend"
 }
