@@ -51,3 +51,91 @@ body {
 .live-dot {
   animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* Ambient background: slow-drifting blurred color fields + a faint dot grid,
+   the same trick behind most modern dashboards (Linear, Vercel, GitHub's
+   empty states) for giving a dark page depth without pulling focus. */
+@keyframes blob-drift-a {
+  0%, 100% { transform: translate(-10%, -10%) scale(1); }
+  50% { transform: translate(5%, 10%) scale(1.15); }
+}
+@keyframes blob-drift-b {
+  0%, 100% { transform: translate(10%, 5%) scale(1); }
+  50% { transform: translate(-8%, -12%) scale(1.1); }
+}
+
+.ambient-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.ambient-bg::before,
+.ambient-bg::after {
+  content: "";
+  position: absolute;
+  width: 46rem;
+  height: 46rem;
+  border-radius: 9999px;
+  filter: blur(110px);
+  opacity: 0.16;
+}
+.ambient-bg::before {
+  top: -12rem;
+  left: -8rem;
+  background: var(--color-brand-500);
+  animation: blob-drift-a 26s ease-in-out infinite;
+}
+.ambient-bg::after {
+  top: 6rem;
+  right: -14rem;
+  background: var(--color-brand-700);
+  animation: blob-drift-b 32s ease-in-out infinite;
+}
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 70%);
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
+}
+
+/* Entrance: staggered via the --delay custom property set per element. */
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: fade-slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface-raised) 25%, rgba(255, 255, 255, 0.06) 50%, var(--color-surface-raised) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot,
+  .ambient-bg::before,
+  .ambient-bg::after,
+  .animate-in,
+  .skeleton {
+    animation: none !important;
+  }
+}

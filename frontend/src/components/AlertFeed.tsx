@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Inbox, Send, ExternalLink, CheckCircle2 } from "lucide-react";
 import { reportAlert, type Alert, type ReportResult } from "../lib/api";
 import { severityColor, severityDotColor } from "./RiskBadge";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 const MIN_SEVERITY_TO_REPORT = 30;
 
@@ -82,8 +82,12 @@ export function AlertFeed({ alerts }: { alerts: Alert[] }) {
 
   return (
     <ul className="divide-y divide-white/5">
-      {alerts.map((alert) => (
-        <li key={alert.id} className="flex items-start justify-between gap-4 py-3.5">
+      {alerts.map((alert, i) => (
+        <li
+          key={alert.id}
+          className="animate-in flex items-start justify-between gap-4 rounded-lg py-3.5 px-2 -mx-2 transition-colors duration-200 hover:bg-white/[0.03]"
+          style={{ "--delay": `${Math.min(i, 8) * 40}ms` } as CSSProperties}
+        >
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${severityDotColor(alert.severity)}`} />
