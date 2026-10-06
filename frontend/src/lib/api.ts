@@ -4,6 +4,8 @@ export interface Stats {
   total_alerts: number;
   flagged_addresses: number;
   transactions_indexed: number;
+  checks_performed: number;
+  checks_blocked: number;
 }
 
 export interface Alert {

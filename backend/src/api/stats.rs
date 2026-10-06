@@ -8,6 +8,8 @@ pub struct Stats {
     pub total_alerts: i64,
     pub flagged_addresses: i64,
     pub transactions_indexed: i64,
+    pub checks_performed: i64,
+    pub checks_blocked: i64,
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -20,6 +22,8 @@ async fn stats(State(state): State<Arc<AppState>>) -> Json<Stats> {
             total_alerts: 0,
             flagged_addresses: 0,
             transactions_indexed: 0,
+            checks_performed: 0,
+            checks_blocked: 0,
         });
     };
     match queries::get_stats(pool).await {
@@ -27,6 +31,8 @@ async fn stats(State(state): State<Arc<AppState>>) -> Json<Stats> {
             total_alerts: s.total_alerts,
             flagged_addresses: s.flagged_addresses,
             transactions_indexed: s.transactions_indexed,
+            checks_performed: s.checks_performed,
+            checks_blocked: s.checks_blocked,
         }),
         Err(err) => {
             tracing::warn!("get_stats query failed: {err}");
@@ -34,6 +40,8 @@ async fn stats(State(state): State<Arc<AppState>>) -> Json<Stats> {
                 total_alerts: 0,
                 flagged_addresses: 0,
                 transactions_indexed: 0,
+                checks_performed: 0,
+                checks_blocked: 0,
             })
         }
     }

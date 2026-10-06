@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
-import { AlertTriangle, Flag, Activity, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Flag, Activity, ShieldCheck, ShieldX, type LucideIcon } from "lucide-react";
 import { fetchAlerts, fetchStats } from "../lib/api";
 import { AlertFeed } from "../components/AlertFeed";
 
@@ -65,13 +65,21 @@ export function Dashboard() {
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-400">Live view of everything the Runtime Monitor has caught.</p>
+        <p className="mt-1 text-sm text-slate-400">
+          Live view of what the Runtime Monitor has caught on-chain, plus every Wallet Shield check — including the
+          ones stopped before a signature ever happened.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard label="Total alerts" value={stats.data?.total_alerts ?? 0} icon={AlertTriangle} />
         <StatCard label="Flagged addresses" value={stats.data?.flagged_addresses ?? 0} icon={Flag} />
         <StatCard label="Transactions indexed" value={stats.data?.transactions_indexed ?? 0} icon={Activity} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <StatCard label="Wallet Shield checks performed" value={stats.data?.checks_performed ?? 0} icon={ShieldCheck} />
+        <StatCard label="Blocked before signing" value={stats.data?.checks_blocked ?? 0} icon={ShieldX} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

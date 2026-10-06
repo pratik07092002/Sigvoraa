@@ -132,6 +132,8 @@ pub struct Stats {
     pub total_alerts: i64,
     pub flagged_addresses: i64,
     pub transactions_indexed: i64,
+    pub checks_performed: i64,
+    pub checks_blocked: i64,
 }
 
 pub async fn get_stats(pool: &PgPool) -> Result<Stats, sqlx::Error> {
@@ -144,10 +146,20 @@ pub async fn get_stats(pool: &PgPool) -> Result<Stats, sqlx::Error> {
     let transactions_indexed: (i64,) = sqlx::query_as("SELECT count(*) FROM transactions")
         .fetch_one(pool)
         .await?;
+    // Wallet Shield / extension checks, counted independently of whether the user
+    // proceeded or canceled — this is the only record of attempts that never
+    // reached the chain, so it's what actually shows "avoided" scams working.
+    let (checks_performed, checks_blocked): (i64, i64) = sqlx::query_as(
+        "SELECT count(*), count(*) FILTER (WHERE verdict <> 'safe') FROM shield_checks",
+    )
+    .fetch_one(pool)
+    .await?;
     Ok(Stats {
         total_alerts: total_alerts.0,
         flagged_addresses: flagged_addresses.0,
         transactions_indexed: transactions_indexed.0,
+        checks_performed,
+        checks_blocked,
     })
 }
 
