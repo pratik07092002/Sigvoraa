@@ -42,34 +42,6 @@ export interface PageCheckDecision {
   proceed: boolean;
 }
 
-// content script -> page (MAIN world), via window.postMessage
-export interface PageWalletConnectRequest {
-  source: "sigvoraa-content";
-  type: "wallet-connect";
-  requestId: string;
-}
-
-// page (MAIN world) -> content script, via window.postMessage
-export interface PageWalletConnectResponse {
-  source: "sigvoraa-inject";
-  type: "wallet-connect-result";
-  requestId: string;
-  ok: boolean;
-  publicKey?: string;
-  error?: string;
-}
-
-// popup -> content script of the active tab, via chrome.tabs.sendMessage
-export interface RequestWalletConnect {
-  type: "request-wallet-connect";
-}
-
-export interface WalletConnectResult {
-  ok: boolean;
-  publicKey?: string;
-  error?: string;
-}
-
 // content script -> background service worker, via chrome.runtime.sendMessage
 export interface BackgroundCheckRequest {
   type: "check-transaction";

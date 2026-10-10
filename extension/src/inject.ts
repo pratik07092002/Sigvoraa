@@ -1,4 +1,4 @@
-import type { PageCheckDecision, PageCheckRequest, PageWalletConnectRequest, PageWalletConnectResponse } from "./types";
+import type { PageCheckDecision, PageCheckRequest } from "./types";
 
 type SolanaTx = { version?: number; serialize: (opts?: Record<string, unknown>) => Uint8Array };
 
@@ -6,9 +6,6 @@ interface SolanaProvider {
   signTransaction?: (tx: SolanaTx) => Promise<SolanaTx>;
   signAllTransactions?: (txs: SolanaTx[]) => Promise<SolanaTx[]>;
   signAndSendTransaction?: (tx: SolanaTx, opts?: unknown) => Promise<unknown>;
-  connect?: (opts?: unknown) => Promise<{ publicKey?: { toString(): string } } | undefined>;
-  isConnected?: boolean;
-  publicKey?: { toString(): string } | null;
   __sigvoraaWrapped?: boolean;
 }
 
@@ -114,50 +111,6 @@ function trapProperty(target: object, key: string, onSet: (value: unknown) => vo
     // the polling fallback below still catches it.
   }
 }
-
-function getActiveProvider(): SolanaProvider | undefined {
-  const w = window as unknown as { solana?: SolanaProvider; phantom?: { solana?: SolanaProvider } };
-  return w.phantom?.solana ?? w.solana;
-}
-
-async function handleConnectRequest(requestId: string): Promise<void> {
-  const provider = getActiveProvider();
-  let ok = false;
-  let publicKey: string | undefined;
-  let error: string | undefined;
-
-  if (!provider) {
-    error = "No Solana wallet found on this page";
-  } else {
-    try {
-      if (!provider.isConnected || !provider.publicKey) {
-        await provider.connect?.();
-      }
-      publicKey = provider.publicKey?.toString();
-      ok = Boolean(publicKey);
-      if (!ok) error = "Wallet didn't return an address";
-    } catch (err) {
-      error = err instanceof Error ? err.message : "Connection rejected";
-    }
-  }
-
-  const res: PageWalletConnectResponse = {
-    source: "sigvoraa-inject",
-    type: "wallet-connect-result",
-    requestId,
-    ok,
-    publicKey,
-    error,
-  };
-  window.postMessage(res, "*");
-}
-
-window.addEventListener("message", (event: MessageEvent) => {
-  if (event.source !== window) return;
-  const data = event.data as PageWalletConnectRequest | undefined;
-  if (!data || data.source !== "sigvoraa-content" || data.type !== "wallet-connect") return;
-  handleConnectRequest(data.requestId);
-});
 
 trapProperty(window, "solana", (value) => wrapProvider(value as SolanaProvider));
 trapProperty(window, "phantom", (value) => {
