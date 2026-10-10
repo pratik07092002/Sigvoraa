@@ -119,7 +119,7 @@ function brandHeader(): string {
       <div class="brand-icon">${svg(iconShieldCheck())}</div>
       <div>
         <div class="brand-title">Sigvoraa Wallet Shield</div>
-        <div class="brand-sub">Checked before Phantom asked you to sign</div>
+        <div class="brand-sub">Checked before your wallet asked you to sign</div>
       </div>
     </div>
   `;

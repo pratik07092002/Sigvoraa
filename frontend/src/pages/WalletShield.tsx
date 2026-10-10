@@ -39,8 +39,8 @@ export function WalletShield() {
       <div className="rounded-xl border border-white/10 bg-surface-card p-6">
         <p className="text-sm leading-relaxed text-slate-300">
           Wallet Shield used to be a page where you'd paste a transaction to check it. The real version is the Sigvoraa
-          browser extension — it wraps Phantom directly, so every transaction gets checked automatically, before
-          Phantom's own approval popup even opens. No copy-pasting, nothing to remember to do.
+          browser extension — it wraps your Solana wallet directly, so every transaction gets checked automatically,
+          before your wallet's own approval popup even opens. No copy-pasting, nothing to remember to do.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">

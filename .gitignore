@@ -22,6 +22,7 @@ frontend/.vite
 
 # extension (esbuild)
 extension/dist
+extension/*.zip
 
 # misc
 *.log

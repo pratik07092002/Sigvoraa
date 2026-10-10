@@ -1,7 +1,8 @@
 import { useState, type CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
-import { AlertTriangle, Flag, Activity, ShieldCheck, ShieldX, Info, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Flag, Activity, ShieldCheck, ShieldX, Info, ArrowRight, type LucideIcon } from "lucide-react";
 import { fetchAlerts, fetchStats } from "../lib/api";
 import { AlertFeed } from "../components/AlertFeed";
 import { useCountUp } from "../lib/useCountUp";
@@ -123,7 +124,7 @@ export function Dashboard() {
     .sort((a, b) => b[1].maxSeverity - a[1].maxSeverity || b[1].count - a[1].count)
     .slice(0, 5);
 
-  const loading = stats.isLoading;
+  const loading = stats.data === undefined;
 
   return (
     <div className="relative">
@@ -131,11 +132,41 @@ export function Dashboard() {
       <div className="ambient-grid" />
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
-        <div className="animate-in" style={delayStyle(0)}>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Two different things live here: what actually happened on-chain, and what Sigvoraa stopped before it could.
-          </p>
+        <div
+          className="animate-in relative isolate overflow-hidden rounded-3xl border border-brand-400/20 bg-gradient-to-br from-[#102a2c] via-surface-card to-[#171b31] px-6 py-10 shadow-2xl shadow-brand-950/30 sm:px-10 sm:py-14"
+          style={delayStyle(0)}
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-20 -top-36 -z-10 h-96 w-96 rounded-full bg-brand-500/20 blur-[100px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-48 left-1/3 -z-10 h-80 w-80 rounded-full bg-cyan-500/10 blur-[100px]"
+          />
+          <div className="max-w-4xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-300/20 bg-brand-400/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-200">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Transaction intelligence · Solana
+            </div>
+            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl">
+              Transaction Intelligence Before Approval.
+            </h1>
+            <h2 className="mt-5 max-w-2xl text-xl font-semibold leading-snug text-brand-200 sm:text-2xl">
+              Verify What You’re Signing. Before You Sign It.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+              Sigvoraa simulates and analyzes blockchain transactions before wallet approval, exposing hidden asset
+              movements, suspicious instructions, and transaction risk in real time.
+            </p>
+            <Link
+              to="/app/shield"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-950/30 transition-colors hover:bg-brand-400"
+            >
+              Check a transaction
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -258,6 +289,133 @@ export function Dashboard() {
             </div>
           </div>
         </div>
+
+        <section
+          aria-labelledby="dont-sign-blind"
+          className="animate-in overflow-hidden rounded-3xl border border-brand-400/15 bg-gradient-to-br from-brand-950/50 via-surface-card to-surface-card p-6 sm:p-10"
+          style={delayStyle(620)}
+        >
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">Why Sigvoraa?</p>
+              <h2 id="dont-sign-blind" className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Don’t Sign Blind.
+              </h2>
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-300">
+                Sigvoraa helps you understand what a blockchain transaction will actually do before your wallet asks
+                you to approve it.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-6 sm:p-8">
+              <h3 className="text-lg font-semibold text-white">Blockchain became trustless.</h3>
+              <h3 className="mt-2 text-lg font-semibold text-brand-200">
+                But transaction approval is still largely trust-based.
+              </h3>
+              <p className="mt-4 leading-relaxed text-slate-400">
+                Users shouldn’t need to understand raw blockchain instructions to know whether a transaction is safe.
+              </p>
+              <p className="mt-4 border-l-2 border-brand-400 pl-4 leading-relaxed text-slate-200">
+                Sigvoraa analyzes the transaction before approval, translates complex instructions into human-readable
+                intent, identifies suspicious behavior, and assigns a clear risk assessment.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="why-we-built-sigvoraa" className="space-y-8 pb-4">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">About Sigvoraa</p>
+            <h2 id="why-we-built-sigvoraa" className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Why We Built Sigvoraa
+            </h2>
+            <h3 className="mt-4 text-xl font-semibold leading-snug text-slate-200 sm:text-2xl">
+              The blockchain is transparent. The transaction isn’t always understandable.
+            </h3>
+            <p className="mt-4 leading-relaxed text-slate-400">
+              Every blockchain transaction is technically visible on-chain. But for a normal user, a wallet approval
+              can still hide what those instructions actually mean.
+            </p>
+            <p className="mt-3 leading-relaxed text-slate-400">And the consequences are getting larger.</p>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-white">The problem, in numbers</h3>
+            <p className="mt-1 text-sm text-slate-400">
+              The scale of crypto-related losses reported in FBI IC3 annual reports.
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-brand-200">$11.37B</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  in cryptocurrency-related losses were reported to the FBI in 2025.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-brand-200">181,565</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  cryptocurrency-related complaints were reported in 2025 — 21% more than 2024.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-brand-200">$62,604</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  was the average reported loss per cryptocurrency-related complaint.
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              Source: FBI Internet Crime Complaint Center (IC3), 2025.{" "}
+              <a
+                href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-300 underline decoration-brand-300/40 underline-offset-4 hover:text-brand-200"
+              >
+                Read the IC3 annual report
+              </a>
+              .
+            </p>
+          </div>
+
+          <div className="border-t border-white/10 pt-7">
+            <h3 className="text-lg font-semibold text-white">
+              And individual wallets are increasingly being targeted.
+            </h3>
+            <p className="mt-1 text-sm text-slate-400">Chainalysis identified approximately:</p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-white">158,000</p>
+                <p className="mt-2 text-sm text-slate-400">personal-wallet compromise incidents in 2025</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-white">80,000+</p>
+                <p className="mt-2 text-sm text-slate-400">unique victims</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-surface-card p-5">
+                <p className="font-mono-tabular text-3xl font-bold text-white">$713M</p>
+                <p className="mt-2 text-sm text-slate-400">in cryptocurrency stolen from individual victims</p>
+              </div>
+            </div>
+            <p className="mt-5 max-w-4xl leading-relaxed text-slate-400">
+              Most importantly for Sigvoraa, Chainalysis says Solana had approximately{" "}
+              <strong className="font-semibold text-slate-200">26,500 victims</strong>, making it the chain with the
+              largest number of incidents in its 2025 personal-wallet analysis. That makes wallet security on Solana
+              especially important.
+            </p>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              Source: Chainalysis,{" "}
+              <a
+                href="https://www.chainalysis.com/blog/crypto-hacking-stolen-funds-2026/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-300 underline decoration-brand-300/40 underline-offset-4 hover:text-brand-200"
+              >
+                Crypto Hacking and Stolen Funds in 2025
+              </a>
+              .
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

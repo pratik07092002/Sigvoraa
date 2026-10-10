@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sigvoraa Wallet Shield Privacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --ink: #1a1d1e;
+    --ink-soft: #52585c;
+    --rule: #e4e1da;
+    --accent: #0f7a5c;
+    --accent-soft: #e6f3ee;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171a; --surface: #1b1f22; --ink: #eceeef; --ink-soft: #a4acb1;
+      --rule: #2b3034; --accent: #4fd3a4; --accent-soft: #163229; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14171a; --surface: #1b1f22; --ink: #eceeef; --ink-soft: #a4acb1;
+    --rule: #2b3034; --accent: #4fd3a4; --accent-soft: #163229; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    padding-inline: 16px;
+    padding-block: 48px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .kicker {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.15; margin: 10px 0 6px; text-wrap: balance; }
+  .meta {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px; color: var(--ink-soft);
+    margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--rule);
+  }
+  .meta code {
+    font-family: var(--mono); background: var(--accent-soft); color: var(--accent);
+    padding: 1px 6px; border-radius: 4px; font-size: 12px;
+  }
+  section { margin-bottom: 34px; }
+  h2 {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;
+  }
+  h2 .n { color: var(--accent); font-variant-numeric: tabular-nums; }
+  p, li { font-size: 16.5px; line-height: 1.65; max-width: 65ch; }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--ink); }
+  .data-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; }
+  .row { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  .row:last-child { border-bottom: none; }
+  .row .label {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-soft); flex: 0 0 120px; padding-top: 2px;
+  }
+  .row .value { flex: 1; font-size: 15px; line-height: 1.55; }
+  .no { color: var(--ink-soft); }
+  .contact { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14.5px; }
+  .contact a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 12px; color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Privacy Policy</div>
+  <h1>Sigvoraa Wallet Shield</h1>
+  <div class="meta">
+    Browser extension &middot; effective <strong>October 7, 2026</strong> &middot; applies to <code>Sigvoraa Wallet Shield</code> for Chrome
+  </div>
+
+  <section>
+    <h2><span class="n">01</span> What this extension does</h2>
+    <p>Sigvoraa Wallet Shield is a single-purpose extension: it intercepts the Solana transactions your wallet asks you to sign on a webpage, sends the transaction to Sigvoraa's risk-check service, and shows you a safe / caution / danger verdict <strong>before</strong> your wallet's own approval popup opens. It works across Solana wallets, not a single provider. It does nothing else.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">02</span> What it reads from a page</h2>
+    <p>To do this, the extension watches for the Solana wallet provider object (<code>window.solana</code>, and <code>window.phantom.solana</code> for Phantom specifically) that a Solana wallet injects on the pages you visit, so it can wrap three methods: <code>signTransaction</code>, <code>signAllTransactions</code>, and <code>signAndSendTransaction</code>. It does not read, store, or transmit anything else about the page &mdash; no page text, no browsing history, no clicks, keystrokes, or form data.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">03</span> What data leaves your device</h2>
+    <p>Only when you trigger one of the three signing methods above, the extension sends the <strong>serialized transaction itself</strong> (as base64, over HTTPS) to a single fixed backend:</p>
+    <div class="data-card">
+      <div class="row">
+        <div class="label">Sent</div>
+        <div class="value">The unsigned transaction bytes &mdash; program instructions, accounts, and amounts involved in that one transaction.</div>
+      </div>
+      <div class="row">
+        <div class="label">Destination</div>
+        <div class="value"><code>https://api.sigvoraa.com/api/shield/check</code> &mdash; Sigvoraa's own risk-rules service, no other party.</div>
+      </div>
+      <div class="row">
+        <div class="label">Purpose</div>
+        <div class="value">Compute a real-time risk verdict (safe / caution / danger) returned to the overlay shown on your screen.</div>
+      </div>
+      <div class="row">
+        <div class="label">Kept on device</div>
+        <div class="value">A single on/off setting for whether protection is enabled, stored locally via <code>chrome.storage.local</code>. It is never sent anywhere.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">04</span> What we don't collect</h2>
+    <ul>
+      <li><span class="no">No</span> names, emails, addresses, or other identifying information</li>
+      <li><span class="no">No</span> passwords, seed phrases, or private keys &mdash; the extension never has access to these</li>
+      <li><span class="no">No</span> browsing history or list of sites visited</li>
+      <li><span class="no">No</span> keystrokes, clicks, or page content</li>
+      <li><span class="no">No</span> advertising identifiers, and no analytics or tracking SDKs are bundled in the extension</li>
+    </ul>
+    <p>Ordinary web infrastructure logging may still apply: like any HTTPS request, a request to our backend inherently carries your IP address and a timestamp as part of standard server operation. We do not use this for tracking, profiling, or identification, and it is not linked to any other data the extension handles.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">05</span> Sharing and retention</h2>
+    <ul>
+      <li>We <strong>do not sell or share</strong> transaction data with third parties.</li>
+      <li>We <strong>do not use</strong> this data for advertising, profiling, or any purpose unrelated to producing the risk verdict.</li>
+      <li>We <strong>do not use</strong> this data to determine creditworthiness or for lending decisions.</li>
+      <li>Transaction data is used to compute the verdict returned to your browser; it is not required for the extension's core function to retain it beyond that.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">06</span> Your choices</h2>
+    <p>Open the toolbar icon any time to pause protection &mdash; while paused, no transaction data is sent anywhere. Uninstalling the extension removes the locally stored setting along with it.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">07</span> Changes to this policy</h2>
+    <p>If this policy changes, the updated version will be posted at this same link with a new effective date.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">08</span> Contact</h2>
+    <p class="contact">Questions about this policy or how Wallet Shield handles data: <a href="mailto:info@sigvoraa.com">info@sigvoraa.com</a> (<a href="mailto:pratikgaikwad072002@gmail.com">pratikgaikwad072002@gmail.com</a>)</p>
+  </section>
+
+  <footer>Sigvoraa Wallet Shield &middot; Chrome Web Store listing</footer>
+</div>
+</body>
+</html>
