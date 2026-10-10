@@ -50,7 +50,6 @@ function StatCard({
   value,
   icon: Icon,
   accent = "brand",
-  loading,
   delay = 0,
 }: {
   label: string;
@@ -58,7 +57,6 @@ function StatCard({
   value: number;
   icon: LucideIcon;
   accent?: "brand" | "good";
-  loading: boolean;
   delay?: number;
 }) {
   const accentClasses = accent === "good" ? "bg-status-good/10 text-status-good" : "bg-brand-500/10 text-brand-300";
@@ -80,11 +78,7 @@ function StatCard({
           <Icon className="h-4 w-4" />
         </div>
       </div>
-      {loading ? (
-        <div className="skeleton mt-4 h-8 w-20 rounded-md" />
-      ) : (
-        <p className="mt-3 font-mono-tabular text-3xl font-bold text-white">{animated.toLocaleString()}</p>
-      )}
+      <p className="mt-3 font-mono-tabular text-3xl font-bold text-white">{animated.toLocaleString()}</p>
     </div>
   );
 }
@@ -123,8 +117,6 @@ export function Dashboard() {
   const topAddressList = [...topAddresses.entries()]
     .sort((a, b) => b[1].maxSeverity - a[1].maxSeverity || b[1].count - a[1].count)
     .slice(0, 5);
-
-  const loading = stats.data === undefined;
 
   return (
     <div className="relative">
@@ -179,7 +171,6 @@ export function Dashboard() {
               info="Rule violations found in transactions that were actually signed and sent — confirmed on-chain by the Runtime Monitor, not a simulation."
               value={stats.data?.total_alerts ?? 0}
               icon={AlertTriangle}
-              loading={loading}
               delay={80}
             />
             <StatCard
@@ -187,7 +178,6 @@ export function Dashboard() {
               info="Addresses a human has explicitly submitted to the on-chain Threat Registry via 'Report to Registry'. This never happens automatically."
               value={stats.data?.flagged_addresses ?? 0}
               icon={Flag}
-              loading={loading}
               delay={140}
             />
             <StatCard
@@ -195,7 +185,6 @@ export function Dashboard() {
               info="Every confirmed transaction the Runtime Monitor has observed on a watched address, flagged or not."
               value={stats.data?.transactions_indexed ?? 0}
               icon={Activity}
-              loading={loading}
               delay={200}
             />
           </div>
@@ -211,7 +200,6 @@ export function Dashboard() {
               info="Every Wallet Shield or extension check that ever ran — including ones you canceled. Nothing here ever touches the chain, so it's not counted above."
               value={stats.data?.checks_performed ?? 0}
               icon={ShieldCheck}
-              loading={loading}
               delay={320}
             />
             <StatCard
@@ -220,7 +208,6 @@ export function Dashboard() {
               value={stats.data?.checks_blocked ?? 0}
               icon={ShieldX}
               accent="good"
-              loading={loading}
               delay={380}
             />
           </div>
