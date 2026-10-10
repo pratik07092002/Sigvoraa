@@ -45,7 +45,7 @@ A sixth rule — liquidity/mint-authority risk — was scoped in the original de
 | Runtime Monitor | Live |
 | Wallet Shield | Live |
 | Threat Registry | Live |
-| Browser Extension | v1 — Phantom only, intercepts transactions before you sign them in the wallet itself |
+| Browser Extension | v1 — works with any Solana wallet injecting the legacy `window.solana` provider (Phantom included), intercepts transactions before you sign them in the wallet itself |
 | Program Scanner | Scoped as a stretch goal, not built — out of scope for this submission |
 
 ## Stack

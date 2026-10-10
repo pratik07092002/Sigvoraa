@@ -1,10 +1,10 @@
 # Sigvoraa Wallet Shield (browser extension)
 
-Intercepts Phantom's injected `window.solana` provider and runs every transaction through Sigvoraa's Wallet Shield (`POST /api/shield/check`, same backend and rules engine as the web app) before Phantom's own approval popup opens.
+Intercepts a Solana wallet's injected `window.solana` provider and runs every transaction through Sigvoraa's Wallet Shield (`POST /api/shield/check`, same backend and rules engine as the web app) before the wallet's own approval popup opens.
 
 ## Scope (v1)
 
-- **Phantom only**, via its legacy `window.solana` / `window.phantom.solana` injection. dApps that only use the newer Wallet Standard registration (common with `@solana/wallet-adapter`) aren't intercepted yet — see the plan doc for why.
+- **Any wallet that injects the legacy `window.solana` / `window.phantom.solana` provider** — not Phantom-specific, this covers most major Solana wallets since they keep that injection for backwards compatibility. dApps/wallets that only use the newer Wallet Standard registration (common with `@solana/wallet-adapter`) aren't intercepted yet — see the plan doc for why.
 - Covers `signTransaction`, `signAllTransactions`, `signAndSendTransaction`.
 - Safe verdicts pass through with a toast. Caution/Danger block with a modal (Proceed anyway / Cancel). If the backend is unreachable, it fails open with a warning toast rather than blocking signing entirely.
 

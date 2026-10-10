@@ -28,3 +28,7 @@ extension/*.zip
 *.log
 .vscode
 fake-drainer-test.html
+
+# local-only docs, not for GitHub
+/PROJECT.md
+/TECHNICAL.md
