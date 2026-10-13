@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Sigvoraa Wallet Shield",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Checks Solana wallet transactions against Sigvoraa's rules engine before you sign.",
   "icons": {
     "16": "icons/icon16.png",
