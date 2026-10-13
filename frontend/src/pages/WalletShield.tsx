@@ -1,4 +1,4 @@
-import { ShieldCheck, ExternalLink, Clock, ShieldAlert, ShieldX, type LucideIcon } from "lucide-react";
+import { ShieldCheck, ExternalLink, ShieldAlert, ShieldX, type LucideIcon } from "lucide-react";
 
 function StepCard({ step, title, body }: { step: number; title: string; body: string }) {
   return (
@@ -45,18 +45,23 @@ export function WalletShield() {
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <a
-            href="https://github.com/pratik07092002/Sigvoraa/tree/main/extension"
+            href="https://chromewebstore.google.com/detail/sigvoraa-wallet-shield/pblacdbdcbilgogjepmlleedceapnkce"
             target="_blank"
             rel="noopener"
             className="flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            Get the extension on GitHub
+            Add to Chrome
           </a>
-          <span className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-slate-500">
-            <Clock className="h-3.5 w-3.5" />
-            Chrome Web Store — coming soon
-          </span>
+          <a
+            href="https://github.com/pratik07092002/Sigvoraa/tree/main/extension"
+            target="_blank"
+            rel="noopener"
+            className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-slate-400 transition-colors hover:border-white/20 hover:text-slate-300"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            Get the source on GitHub
+          </a>
         </div>
       </div>
 
